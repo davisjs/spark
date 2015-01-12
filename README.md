@@ -9,17 +9,24 @@ i. This part first need to specify a row partitioner and a column partitioner, a
 ii. The next job is to decide how to store a split matrix block in the memory of one computer, which could be a row block or a column block. For example, if it is a row block, which has partial rows and entire columns, it would split the block along columns into many square-like smaller block with partial rows and partial columns.
 
 iii. Then, how should we store a smaller block? There are three ways: (1) we store the block as a small dense matrix, which means we treat the entire matrix as a dense one; (2) If the entire matrix is very sparse and the small block has many all-zeros columns (or rows), we store each row (or column) by column indices (or row indices) and their corresponding values in order. We use a row (or column) array to store all such row (or column). For example:
+
 (4  9  0  0  3  0;
  5  0  0  0  2  0)
+ 
 ==> stored as
+
 [0] -> ((0,4) (1,9) (4,3))
 [1] -> ((0,5) (4,2))  
+
 (3) If the small block has many all-zeros columns and rows, we store each non-zero entry by its corresponding row index and column index and its value. For example:
+
 (4  9  0  0  3  0;
  5  0  0  0  2  0;
- 0  0  0  0  0  0
+ 0  0  0  0  0  0;
  2  0  0  0  0  0)
+ 
 ==> stored as
+
 ((0,0,4), (0,1,9) (0,4,3) (1,0,5) (1,4,2) (3,0,2))
 
 2. create a small look-up table
